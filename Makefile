@@ -1,10 +1,10 @@
 TARGET = program
 
-SRC = src/main.c src/draw.c
+SRC = src/main.c 
 
 CC = gcc
 
-CFLAGS = -Iinclude -Wall -Wextra -O2 -lSDL2 -lm
+CFLAGS = -Iinclude -Wall -Wextra -fsanitize=address -lglfw -lm -lGL -lGLEW
 
 all: $(TARGET)
 

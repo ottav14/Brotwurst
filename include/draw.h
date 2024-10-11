@@ -9,19 +9,16 @@
 
 #include <SDL2/SDL.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 typedef struct {
-	uint32_t* pixels;
-	int pitch;
+	SDL_Renderer* renderer;
 	int width;
 	int height;
 } Screen;
 
-int validCoord(int x, int y, Screen* screen);
-void bufferPixel(int x, int y, unsigned long color, Screen* screen);
-void bufferCircle(double cx, double cy, double r, unsigned long color, Screen* screen);
-void bufferRect(int x0, int y0, int w, int h, unsigned long color, Screen* screen);
-Screen* enableDrawMode(SDL_Texture* texture, int _width, int _height);
+void fillCircle(int cx, int cy, int r, Screen* screen);
 
 #endif
