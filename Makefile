@@ -1,6 +1,6 @@
-TARGET = program
+TARGET = beantown
 
-SRC = src/main.c 
+SRC = src/main.c src/graphics.c src/util.c
 
 CC = gcc
 
