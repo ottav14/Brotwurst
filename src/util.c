@@ -24,3 +24,8 @@ char* readFileToString(const char *filename) {
     fclose(file);
     return buffer;
 }
+
+float lerp(float a, float b, float t) {
+    return a + t * (b - a);
+}
+

@@ -7,14 +7,17 @@
 #include "graphics.h"
 #include "util.h"
 
-#define MOVE_SPEED 0.01
-#define ZOOM_SPEED 0.01
+#define MOVE_SPEED 0.02
+#define ZOOM_SPEED 0.015
 
 GLFWwindow* window;
 GLuint VBO, VAO;
 double u_position_x = 0;
 double u_position_y = 0;
+double desired_position_x = 0;
+double desired_position_y = 0;
 double u_zoom = 1;
+double desired_zoom = 1;
 
 void handle_input(GLFWwindow* window) {
 	// Quit
@@ -35,15 +38,21 @@ void handle_input(GLFWwindow* window) {
 
 	double mag = sqrt(x_offset*x_offset + y_offset*y_offset);
 	if(mag > 0) {
-		u_position_x += u_zoom * MOVE_SPEED * x_offset / mag;
-		u_position_y += u_zoom * MOVE_SPEED * y_offset / mag;
+		desired_position_x += u_zoom * MOVE_SPEED * x_offset / mag;
+		desired_position_y += u_zoom * MOVE_SPEED * y_offset / mag;
 	}
+
+	u_position_x = lerp(u_position_x, desired_position_x, 0.05); 
+	u_position_y = lerp(u_position_y, desired_position_y, 0.05); 
+
 
 	// Zoom controls
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-		u_zoom *= 1.0 - ZOOM_SPEED;
+		desired_zoom *= 1.0 - ZOOM_SPEED;
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		u_zoom *= 1.0 + ZOOM_SPEED;
+		desired_zoom *= 1.0 + ZOOM_SPEED;
+
+	u_zoom = lerp(u_zoom, desired_zoom, 0.05);
 
 }
 

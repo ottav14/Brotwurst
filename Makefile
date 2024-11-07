@@ -1,4 +1,4 @@
-TARGET = beantown
+TARGET = Beerbrot
 
 SRC = src/main.c src/graphics.c src/util.c
 
