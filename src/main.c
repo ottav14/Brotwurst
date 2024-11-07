@@ -3,15 +3,58 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "graphics.h"
 #include "util.h"
 
+#define MOVE_SPEED 0.01
+#define ZOOM_SPEED 0.01
+
 GLFWwindow* window;
 GLuint VBO, VAO;
+double u_position_x = 0;
+double u_position_y = 0;
+double u_zoom = 1;
 
 void handle_input(GLFWwindow* window) {
+	// Quit
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
+	// Movement controls
+	double x_offset = 0;
+	double y_offset = 0;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		y_offset += 1;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		x_offset -= 1;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		y_offset -= 1;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		x_offset += 1;
+
+	double mag = sqrt(x_offset*x_offset + y_offset*y_offset);
+	if(mag > 0) {
+		u_position_x += u_zoom * MOVE_SPEED * x_offset / mag;
+		u_position_y += u_zoom * MOVE_SPEED * y_offset / mag;
+	}
+
+	// Zoom controls
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		u_zoom *= 1.0 - ZOOM_SPEED;
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		u_zoom *= 1.0 + ZOOM_SPEED;
+
+}
+
+void update_uniforms(GLuint shaderProgram) {
+
+	GLint positionLocation = glGetUniformLocation(shaderProgram, "u_position");
+	glUniform2f(positionLocation, u_position_x, u_position_y);
+
+	GLint zoomLocation = glGetUniformLocation(shaderProgram, "u_zoom");
+	glUniform1f(zoomLocation, u_zoom);
+
 }
 
 void init() {
@@ -49,11 +92,14 @@ int main() {
 
 	// Set uniform values
 	glUniform2f(resolutionLocation, 1920.0, 1080.0);
+	update_uniforms(shaderProgram);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
 
 		handle_input(window);
+
+		update_uniforms(shaderProgram);
 
         glClearColor(1, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
