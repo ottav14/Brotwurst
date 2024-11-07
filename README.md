@@ -10,37 +10,30 @@ A Mandelbrot set visualizer by Dom Ottaviano.
 # BUILD REQUIREMENTS
 
  - OpenGL (most likely pre-installed)
- - GLFW (very common windowing api may also already be installed)
+ - GLFW (very common windowing api, may also already be installed)
  - A C compiler (would be impressive if you didn't have this on your machine)
 
 # BUILD INSTRUCTIONS
 
-1. Clone the repo
+To download and build, run:
 
-    $ git clone git@github.com:ottav14/beerbrot.git
+```bash
+git clone git@github.com:ottav14/beerbrot.git
+cd beerbrot
+Make
+```
 
-2. Navigate to root directory
-    
-    $ cd beerbrot
+Run this after building to launch the program:
 
-3. Run build command
+```bash
+./Beerbrot
+```
 
-    $ Make
+If you cannot run this command make sure run permissions are enabled on the file:
 
-    or
-
-    $ Make run
-
-    to build and run in one line
-
-Run this after building to launch the program
-
-    $ ./Beerbrot
-
-If you cannot run this command make sure run permissions are enabled on the file
-
-    $ chmod +x Beerbrot
-
+```bash
+chmod +x Beerbrot
+```
 
 
                                                      
