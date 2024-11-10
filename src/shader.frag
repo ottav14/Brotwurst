@@ -10,15 +10,39 @@ uniform vec2 u_position;
 uniform float u_zoom;
 uniform float u_time;
 
+float wave(vec2 p, float tb, float ra) {
+    tb = 3.1415927*5.0/6.0*max(tb,0.0001);
+    vec2 co = ra*vec2(sin(tb),cos(tb));
+    p.x = abs(mod(p.x,co.x*4.0)-co.x*2.0);
+    vec2  p1 = p;
+    vec2  p2 = vec2(abs(p.x-2.0*co.x),-p.y+2.0*co.y);
+    float d1 = ((co.y*p1.x>co.x*p1.y) ? length(p1-co) : abs(length(p1)-ra));
+    float d2 = ((co.y*p2.x>co.x*p2.y) ? length(p2-co) : abs(length(p2)-ra));
+    return min(d1, d2);
+}
+
+float triangle(vec2 p, float r) {
+    const float k = sqrt(3.0);
+    p.x = abs(p.x) - r;
+    p.y = p.y + r/k;
+
+    if(p.x + k * p.y > 0.0) 
+		p = vec2(p.x - k * p.y, -k * p.x - p.y) / 2.0;
+
+    p.x -= clamp(p.x, -2.0 * r, 0.0);
+    return -length(p) * sign(p.y);
+}
+
 float bounce() {
 	return 0.5*sin(u_time)+0.5;
 }
 
 float trap(vec2 z) {
 	float point = distance(z, vec2(cos(u_time), sin(u_time)));
-	float line = min(abs(z.x), abs(z.y));
+	float triangle = triangle(z, sin(u_time));
+	float wave = wave(z, 1.0, 1.0);
 	
-	return mix(line, point, bounce());
+	return wave;
 }
 
 vec3 color(vec3 a, vec3 b, vec3 c, vec3 d, float t) {
@@ -82,17 +106,15 @@ void main() {
 
 
 	vec2 uv = u_zoom * (2.0 * gl_FragCoord.xy / u_resolution - 1.0) + u_position;
-	int i = int(u_time) % 7;
-	int next = (i+1) % 7;
+	int i = 2;
 
 	float t = 1-get_trap(uv);
 	vec3 a = vec3(0.5);
 	vec3 b = vec3(0.5);
 	vec3 c = vec3(2.0, 1.0, 0.0);
 	vec3 d = vec3(0.5, 0.2, 0.25);
-	vec3 col1 = color(as[i], bs[i], cs[i], ds[i], 1-t);
-	vec3 col2 = color(as[next], bs[next], cs[next], ds[next], 1-t);
-	vec3 col = mix(col1, col2, fract(u_time));
+
+	vec3 col = color(as[i], bs[i], cs[i], ds[i], t);
 
     FragColor = vec4(col, 1.0); 
 
