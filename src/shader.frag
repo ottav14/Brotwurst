@@ -43,26 +43,56 @@ float get_trap(vec2 c) {
 
 void main() {
 
-	vec3 cols[8];
+	vec3 as[7];
+	vec3 bs[7];
+	vec3 cs[7];
+	vec3 ds[7];
 
-	/*
-	cols[0] = vec3(255,   0,   0) / 255;
-	cols[1] = vec3(255, 127,   0) / 255;
-	cols[2] = vec3(255, 255,   0) / 255;
-	cols[3] = vec3(  0, 255,   0) / 255;
-	cols[4] = vec3(  0,   0, 255) / 255;
-	cols[5] = vec3( 75,   0, 130) / 255;
-	cols[6] = vec3(238, 130, 238) / 255;
-	cols[7] = vec3(255,   0,   0) / 255;
-	*/
+	as[0] = vec3(0.5);
+	as[1] = vec3(0.5); 
+	as[2] = vec3(0.5);
+	as[3] = vec3(0.5);
+	as[4] = vec3(0.5);
+	as[5] = vec3(0.5);
+	as[6] = vec3(0.8, 0.5, 0.4);
+
+	bs[0] = vec3(0.5);
+	bs[1] = vec3(0.5);
+	bs[2] = vec3(0.5);
+	bs[3] = vec3(0.5);
+	bs[4] = vec3(0.5);
+	bs[5] = vec3(0.5);
+	bs[6] = vec3(0.2, 0.4, 0.2);
+
+	cs[0] = vec3(1.0);
+	cs[1] = vec3(1.0);
+	cs[2] = vec3(1.0);
+	cs[3] = vec3(1.0, 1.0, 0.5);
+	cs[4] = vec3(1.0, 0.7, 0.4);
+	cs[5] = vec3(2.0, 1.0, 0.0);
+	cs[6] = vec3(2.0, 1.0, 1.0);
+
+	ds[0] = vec3(0.0, 0.33, 0.67);
+	ds[1] = vec3(0.0, 0.1, 0.2);
+	ds[2] = vec3(0.3, 0.2, 0.2);
+	ds[3] = vec3(0.8, 0.9, 0.3);
+	ds[4] = vec3(0.0, 0.15, 0.2);
+	ds[5] = vec3(0.5, 0.2, 0.25);
+	ds[6] = vec3(0.0, 0.25, 0.25);
+
 
 	vec2 uv = u_zoom * (2.0 * gl_FragCoord.xy / u_resolution - 1.0) + u_position;
+	int i = int(u_time) % 7;
+	int next = (i+1) % 7;
+
 	float t = 1-get_trap(uv);
 	vec3 a = vec3(0.5);
 	vec3 b = vec3(0.5);
 	vec3 c = vec3(2.0, 1.0, 0.0);
 	vec3 d = vec3(0.5, 0.2, 0.25);
-	vec3 col = color(a, b, c, d, 1-t);
+	vec3 col1 = color(as[i], bs[i], cs[i], ds[i], 1-t);
+	vec3 col2 = color(as[next], bs[next], cs[next], ds[next], 1-t);
+	vec3 col = mix(col1, col2, fract(u_time));
 
     FragColor = vec4(col, 1.0); 
 
