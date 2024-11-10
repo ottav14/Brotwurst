@@ -3,6 +3,7 @@ out vec4 FragColor;
 
 #define ITERATIONS 100
 #define MAX_DISTANCE 5000
+#define PI 3.141592
 
 uniform vec2 u_resolution;
 uniform vec2 u_position;
@@ -18,6 +19,10 @@ float trap(vec2 z) {
 	float line = min(abs(z.x), abs(z.y));
 	
 	return mix(line, point, bounce());
+}
+
+vec3 color(vec3 a, vec3 b, vec3 c, vec3 d, float t) {
+	return a + b * cos(2.0 * PI * (c * t + d));
 }
 
 float get_trap(vec2 c) {
@@ -40,6 +45,7 @@ void main() {
 
 	vec3 cols[8];
 
+	/*
 	cols[0] = vec3(255,   0,   0) / 255;
 	cols[1] = vec3(255, 127,   0) / 255;
 	cols[2] = vec3(255, 255,   0) / 255;
@@ -48,11 +54,15 @@ void main() {
 	cols[5] = vec3( 75,   0, 130) / 255;
 	cols[6] = vec3(238, 130, 238) / 255;
 	cols[7] = vec3(255,   0,   0) / 255;
+	*/
 
-	vec2 c = u_zoom * (2.0 * gl_FragCoord.xy / u_resolution - 1.0) + u_position;
-	float d = 1-get_trap(c);
-	d = 6 * clamp(0, 1, pow(d, 3));
-	vec3 col= mix(cols[int(d)], cols[int(d)+1], fract(d));
+	vec2 uv = u_zoom * (2.0 * gl_FragCoord.xy / u_resolution - 1.0) + u_position;
+	float t = 1-get_trap(uv);
+	vec3 a = vec3(0.5);
+	vec3 b = vec3(0.5);
+	vec3 c = vec3(2.0, 1.0, 0.0);
+	vec3 d = vec3(0.5, 0.2, 0.25);
+	vec3 col = color(a, b, c, d, 1-t);
 
     FragColor = vec4(col, 1.0); 
 
