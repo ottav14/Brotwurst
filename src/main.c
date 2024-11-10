@@ -9,6 +9,7 @@
 
 #define MOVE_SPEED 0.02
 #define ZOOM_SPEED 0.015
+#define TIMESTEP 0.01
 
 GLFWwindow* window;
 GLuint VBO, VAO;
@@ -18,6 +19,7 @@ double desired_position_x = 0;
 double desired_position_y = 0;
 double u_zoom = 1;
 double desired_zoom = 1;
+double u_time = 0;
 
 void handle_input(GLFWwindow* window) {
 	// Quit
@@ -42,27 +44,30 @@ void handle_input(GLFWwindow* window) {
 		desired_position_y += u_zoom * MOVE_SPEED * y_offset / mag;
 	}
 
-	u_position_x = lerp(u_position_x, desired_position_x, 0.05); 
-	u_position_y = lerp(u_position_y, desired_position_y, 0.05); 
-
-
 	// Zoom controls
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		desired_zoom *= 1.0 - ZOOM_SPEED;
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		desired_zoom *= 1.0 + ZOOM_SPEED;
 
-	u_zoom = lerp(u_zoom, desired_zoom, 0.05);
 
 }
 
 void update_uniforms(GLuint shaderProgram) {
+
+	u_position_x = lerp(u_position_x, desired_position_x, 0.05); 
+	u_position_y = lerp(u_position_y, desired_position_y, 0.05); 
+	u_zoom = lerp(u_zoom, desired_zoom, 0.05);
+	u_time += TIMESTEP;
 
 	GLint positionLocation = glGetUniformLocation(shaderProgram, "u_position");
 	glUniform2f(positionLocation, u_position_x, u_position_y);
 
 	GLint zoomLocation = glGetUniformLocation(shaderProgram, "u_zoom");
 	glUniform1f(zoomLocation, u_zoom);
+
+	GLint timeLocation = glGetUniformLocation(shaderProgram, "u_time");
+	glUniform1f(timeLocation, u_time);
 
 }
 
