@@ -1,4 +1,4 @@
-TARGET = Beerbrot
+TARGET = brotwurst
 
 SRC = src/main.c src/graphics.c src/util.c
 
