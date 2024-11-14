@@ -38,11 +38,9 @@ float bounce() {
 }
 
 float trap(vec2 z) {
-	float point = distance(z, vec2(cos(u_time), sin(u_time)));
-	float triangle = triangle(z, sin(u_time));
-	float wave = wave(z, 1.0, 1.0);
+	float point = length(z);
 	
-	return wave;
+	return point;
 }
 
 vec3 color(vec3 a, vec3 b, vec3 c, vec3 d, float t) {
